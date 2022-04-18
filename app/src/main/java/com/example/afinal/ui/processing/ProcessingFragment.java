@@ -3,10 +3,13 @@ package com.example.afinal.ui.processing;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,11 +50,11 @@ import static android.app.Activity.RESULT_OK;
 public class ProcessingFragment extends Fragment {
 
     private ProcessingViewModel processingViewModel;
-    private Button photoBt;
-    private Button templateBt;
+    private Button contentBt;
+    private Button styleBt;
     private Button submitBt;
-    private ImageView photoIv;
-    private ImageView templateIv;
+    private ImageView contentIv;
+    private ImageView styleIv;
     private String TAG = "tag";
     private static final int PICK_PHOTO_CODE = 100;
     private static final int PICK_TEMPLATE_CODE = 101;
@@ -71,11 +74,12 @@ public class ProcessingFragment extends Fragment {
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        photoBt = getActivity().findViewById(R.id.photo_bt);
-        templateBt = getActivity().findViewById(R.id.template_bt);
-        photoIv = getActivity().findViewById(R.id.photo_iv);
-        templateIv = getActivity().findViewById(R.id.template_iv);
-        photoBt.setOnClickListener(new View.OnClickListener() {
+        contentBt = getActivity().findViewById(R.id.photo_bt);
+        styleBt = getActivity().findViewById(R.id.template_bt);
+        submitBt = getActivity().findViewById(R.id.submit_bt);
+        contentIv = getActivity().findViewById(R.id.photo_iv);
+        styleIv = getActivity().findViewById(R.id.template_iv);
+        contentBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
@@ -84,13 +88,22 @@ public class ProcessingFragment extends Fragment {
                 startActivityForResult(intent, PICK_PHOTO_CODE);
             }
         });
-        templateBt.setOnClickListener(new View.OnClickListener() {
+        styleBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, PICK_TEMPLATE_CODE);
+            }
+        });
+        submitBt.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Context content =  contentIv.getContext();
+//                Matrix style = templateIv.getImageMatrix();
+//                System.out.println(style);
+                System.out.println();
             }
         });
     }
@@ -143,14 +156,16 @@ public class ProcessingFragment extends Fragment {
         if (requestCode == PICK_PHOTO_CODE && resultCode == RESULT_OK) {
             final Uri imageUri = Objects.requireNonNull(data).getData();
             //显示图片
-            Glide.with(this).load(imageUri).into(photoIv);
+            Glide.with(this).load(imageUri).into(contentIv);
         }
         if (requestCode == PICK_TEMPLATE_CODE && resultCode == RESULT_OK) {
             final Uri imageUri = Objects.requireNonNull(data).getData();
             //显示图片
-            Glide.with(this).load(imageUri).into(templateIv);
+            Glide.with(this).load(imageUri).into(styleIv);
         }
     }
+
+
 
 
 
