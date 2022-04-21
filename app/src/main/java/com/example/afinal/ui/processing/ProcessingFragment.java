@@ -1,45 +1,45 @@
 package com.example.afinal.ui.processing;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.example.afinal.MainActivity;
 import com.example.afinal.R;
-import com.example.afinal.ui.picture.PictureViewModel;
+import com.example.afinal.service.MyRequest;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Objects;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -55,6 +55,8 @@ public class ProcessingFragment extends Fragment {
     private Button submitBt;
     private ImageView contentIv;
     private ImageView styleIv;
+    private Bitmap contentBitmap;
+    private Bitmap styleBitmap;
     private String TAG = "tag";
     private static final int PICK_PHOTO_CODE = 100;
     private static final int PICK_TEMPLATE_CODE = 101;
@@ -71,6 +73,7 @@ public class ProcessingFragment extends Fragment {
         requestPermission();
         return root;
     }
+
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -97,17 +100,39 @@ public class ProcessingFragment extends Fragment {
                 startActivityForResult(intent, PICK_TEMPLATE_CODE);
             }
         });
+        final Handler handler = new Handler();
         submitBt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Context content =  contentIv.getContext();
-//                Matrix style = templateIv.getImageMatrix();
-//                System.out.println(style);
-                System.out.println();
+                // 3
+                try {
+                    //将位图转为字节数组后再转为base64
+                    ByteArrayOutputStream contentOutputStream = new ByteArrayOutputStream();
+                    contentBitmap.compress(Bitmap.CompressFormat.JPEG, 100, contentOutputStream);
+                    //发起网络请求，传入base64数据
+                    getImgBase64(Base64.encodeToString(contentOutputStream.toByteArray(), Base64.DEFAULT));
+
+                    ByteArrayOutputStream styleOutputStream = new ByteArrayOutputStream();
+                    styleBitmap.compress(Bitmap.CompressFormat.JPEG, 100, styleOutputStream);
+                    //发起网络请求，传入base64数据
+                    getImgBase64(Base64.encodeToString(styleOutputStream.toByteArray(), Base64.DEFAULT));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
-
+    void getImgBase64(final String imgBase64) {
+        new Thread() {//开线程
+            @Override
+            public void run() {
+                MyRequest request = new MyRequest();//这里是我封装的一个网络请求方法，详细代码在最下方
+                String data="image="+imgBase64;
+                String res = request.post("http://10.241.127.208:30000/get",data);
+                Log.i("res", res);//打印返回的结果
+            }
+        }.start();
+    }
 
     /**
      * 权限请求结果
@@ -155,11 +180,23 @@ public class ProcessingFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_PHOTO_CODE && resultCode == RESULT_OK) {
             final Uri imageUri = Objects.requireNonNull(data).getData();
+            ContentResolver cr = this.getContext().getContentResolver();
+            try {
+                contentBitmap = BitmapFactory.decodeStream(cr.openInputStream(imageUri));//获取位图
+            } catch (Exception e){
+                e.printStackTrace();
+            }
             //显示图片
             Glide.with(this).load(imageUri).into(contentIv);
         }
         if (requestCode == PICK_TEMPLATE_CODE && resultCode == RESULT_OK) {
             final Uri imageUri = Objects.requireNonNull(data).getData();
+            ContentResolver cr = this.getContext().getContentResolver();
+            try {
+                styleBitmap = BitmapFactory.decodeStream(cr.openInputStream(imageUri));//获取位图
+            } catch (Exception e){
+                e.printStackTrace();
+            }
             //显示图片
             Glide.with(this).load(imageUri).into(styleIv);
         }
