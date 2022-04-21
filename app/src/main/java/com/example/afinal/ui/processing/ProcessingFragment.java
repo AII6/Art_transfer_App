@@ -100,7 +100,6 @@ public class ProcessingFragment extends Fragment {
                 startActivityForResult(intent, PICK_TEMPLATE_CODE);
             }
         });
-        final Handler handler = new Handler();
         submitBt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
