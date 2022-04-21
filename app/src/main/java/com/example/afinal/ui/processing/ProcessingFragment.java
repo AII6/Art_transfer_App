@@ -110,30 +110,41 @@ public class ProcessingFragment extends Fragment {
                     ByteArrayOutputStream contentOutputStream = new ByteArrayOutputStream();
                     contentBitmap.compress(Bitmap.CompressFormat.JPEG, 100, contentOutputStream);
                     //发起网络请求，传入base64数据
-                    getImgBase64(Base64.encodeToString(contentOutputStream.toByteArray(), Base64.DEFAULT));
+                    getContentImgBase64(Base64.encodeToString(contentOutputStream.toByteArray(), Base64.DEFAULT));
 
                     ByteArrayOutputStream styleOutputStream = new ByteArrayOutputStream();
                     styleBitmap.compress(Bitmap.CompressFormat.JPEG, 100, styleOutputStream);
                     //发起网络请求，传入base64数据
-                    getImgBase64(Base64.encodeToString(styleOutputStream.toByteArray(), Base64.DEFAULT));
+                    getStyleImgBase64(Base64.encodeToString(styleOutputStream.toByteArray(), Base64.DEFAULT));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
     }
-    void getImgBase64(final String imgBase64) {
+    void getContentImgBase64(final String imgBase64) {
         new Thread() {//开线程
             @Override
             public void run() {
                 MyRequest request = new MyRequest();//这里是我封装的一个网络请求方法，详细代码在最下方
-                String data="image="+imgBase64;
+                String data="content="+imgBase64;
                 String res = request.post("http://10.241.127.208:30000/get",data);
                 Log.i("res", res);//打印返回的结果
             }
         }.start();
     }
 
+    void getStyleImgBase64(final String imgBase64) {
+        new Thread() {//开线程
+            @Override
+            public void run() {
+                MyRequest request = new MyRequest();//这里是我封装的一个网络请求方法，详细代码在最下方
+                String data="style="+imgBase64;
+                String res = request.post("http://10.241.127.208:30000/get",data);
+                Log.i("res", res);//打印返回的结果
+            }
+        }.start();
+    }
     /**
      * 权限请求结果
      * @param requestCode 请求码
