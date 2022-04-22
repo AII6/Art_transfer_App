@@ -1,6 +1,7 @@
 from flask import Flask, request
 import base64
 import time
+from PIL import Image
 
 app = Flask(__name__)
 a = 0
@@ -25,6 +26,8 @@ def index():
         contentfile = "./content/" + time.strftime('%Y%m%d_%H%M%S') + '.jpg'  # 文件的保存路径
         contentdata = base64.b64decode(content)  # 进行base64解码
         print(type(contentdata))  #
+        a = Image.frombytes('RGB', (512, 512), contentdata)
+        print(type(a))
         # file1 = open(contentfile, 'wb')  # 以二进制写方式打开文件
         # file1.write(contentdata)  # 写入文件
         # file1.close()  # 关闭文件
