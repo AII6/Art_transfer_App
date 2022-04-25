@@ -12,8 +12,8 @@ public class MyRequest {
             URL url = new URL(url1);
             HttpURLConnection Connection = (HttpURLConnection) url.openConnection();//创建连接
             Connection.setRequestMethod("POST");
-            Connection.setConnectTimeout(3000);
-            Connection.setReadTimeout(3000);
+            Connection.setConnectTimeout(300000);
+            Connection.setReadTimeout(300000);
             Connection.setDoInput(true);
             Connection.setDoOutput(true);
             Connection.setUseCaches(false);
@@ -27,7 +27,7 @@ public class MyRequest {
             if (responseCode == Connection.HTTP_OK) {//判断请求是否成功
                 InputStream inputStream = Connection.getInputStream();
                 ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-                byte[] bytes = new byte[1024];
+                byte[] bytes = new byte[20480];
                 int length = 0;
                 while ((length = inputStream.read(bytes)) != -1) {
                     arrayOutputStream.write(bytes, 0, length);

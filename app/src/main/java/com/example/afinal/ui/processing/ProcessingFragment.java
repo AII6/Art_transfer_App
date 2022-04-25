@@ -49,12 +49,14 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProcessingFragment extends Fragment {
 
+    private static Bitmap outputBitmap;
     private ProcessingViewModel processingViewModel;
     private Button contentBt;
     private Button styleBt;
     private Button submitBt;
     private ImageView contentIv;
     private ImageView styleIv;
+    private ImageView outputIv;
     private Bitmap contentBitmap;
     private Bitmap styleBitmap;
     private String TAG = "tag";
@@ -121,6 +123,13 @@ public class ProcessingFragment extends Fragment {
             }
         });
     }
+
+    private static Bitmap base642Bitmap(String base64) {
+        byte[] decode = Base64.decode(base64.split(",")[1],Base64.DEFAULT);
+        outputBitmap = BitmapFactory.decodeByteArray(decode,0,decode.length);
+        return outputBitmap;
+    }
+
     void getContentImgBase64(final String imgBase64) {
         new Thread() {//开线程
             @Override
@@ -128,6 +137,9 @@ public class ProcessingFragment extends Fragment {
                 MyRequest request = new MyRequest();//这里是我封装的一个网络请求方法，详细代码在最下方
                 String data="content="+imgBase64;
                 String res = request.post("http://10.241.127.208:30000/get",data);
+                if(res.length()>100){
+                    outputIv.setImageBitmap(base642Bitmap(res));
+                }
                 Log.i("res", res);//打印返回的结果
             }
         }.start();
@@ -140,6 +152,9 @@ public class ProcessingFragment extends Fragment {
                 MyRequest request = new MyRequest();//这里是我封装的一个网络请求方法，详细代码在最下方
                 String data="style="+imgBase64;
                 String res = request.post("http://10.241.127.208:30000/get",data);
+                if(res.length()>100){
+                    outputIv.setImageBitmap(base642Bitmap(res));
+                }
                 Log.i("res", res);//打印返回的结果
             }
         }.start();
