@@ -9,37 +9,38 @@
 
     <ImageView
         android:id="@+id/photo_iv"
-        android:layout_width="59dp"
-        android:layout_height="66dp"
+        android:layout_width="160dp"
+        android:layout_height="300dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/template_iv"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/photo_bt"
-        android:layout_width="40dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="133dp"
-        android:text="打开相册"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
+        android:text="上传照片"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/template_bt"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/template_bt"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/photo_iv"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/photo_iv" />
 
     <ImageView
         android:id="@+id/template_iv"
-        android:layout_width="59dp"
-        android:layout_height="66dp"
+        android:layout_width="160dp"
+        android:layout_height="300dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/photo_iv"
         app:layout_constraintRight_toRightOf="parent"
@@ -48,35 +49,25 @@
 
     <Button
         android:id="@+id/template_bt"
-        android:layout_width="40dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="128dp"
-        android:text="上传"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
+        android:text="上传模板"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/template_iv"
-        app:layout_constraintVertical_bias="0.437" />
+        app:layout_constraintTop_toBottomOf="@+id/template_iv" />
 
     <Button
         android:id="@+id/submit_bt"
-        android:layout_width="40dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="52dp"
-        android:layout_marginLeft="52dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginBottom="20dp"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="40dp"
         android:text="生成"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

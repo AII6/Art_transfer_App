@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
+import com.example.afinal.CustomDialog;
 import com.example.afinal.R;
 import com.example.afinal.service.MyRequest;
 
@@ -59,6 +60,7 @@ public class ProcessingFragment extends Fragment {
     private ImageView outputIv;
     private Bitmap contentBitmap;
     private Bitmap styleBitmap;
+    private CustomDialog customDialog;
     private String TAG = "tag";
     private static final int PICK_PHOTO_CODE = 100;
     private static final int PICK_TEMPLATE_CODE = 101;
@@ -107,6 +109,8 @@ public class ProcessingFragment extends Fragment {
             public void onClick(View view){
                 // 3
                 try {
+                    customDialog = new CustomDialog(getActivity());
+                    customDialog.show();
                     //将位图转为字节数组后再转为base64
                     ByteArrayOutputStream contentOutputStream = new ByteArrayOutputStream();
                     contentBitmap.compress(Bitmap.CompressFormat.JPEG, 100, contentOutputStream);
@@ -117,6 +121,7 @@ public class ProcessingFragment extends Fragment {
                     styleBitmap.compress(Bitmap.CompressFormat.JPEG, 100, styleOutputStream);
                     //发起网络请求，传入base64数据
                     getStyleImgBase64(Base64.encodeToString(styleOutputStream.toByteArray(), Base64.DEFAULT));
+                    customDialog.dismiss();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -125,19 +130,19 @@ public class ProcessingFragment extends Fragment {
     }
 
     private static Bitmap base642Bitmap(String base64) {
-        byte[] decode = Base64.decode(base64.split(",")[1],Base64.DEFAULT);
+        byte[] decode = Base64.decode(base64,Base64.DEFAULT);
         outputBitmap = BitmapFactory.decodeByteArray(decode,0,decode.length);
         return outputBitmap;
     }
-
+//.split(",")[1]
     void getContentImgBase64(final String imgBase64) {
         new Thread() {//开线程
             @Override
             public void run() {
                 MyRequest request = new MyRequest();//这里是我封装的一个网络请求方法，详细代码在最下方
                 String data="content="+imgBase64;
-                String res = request.post("http://10.241.127.208:30000/get",data);
-                if(res.length()>100){
+                String res = request.post("http://192.168.43.153:30000/get",data);
+                if(res.length()>500){
                     outputIv.setImageBitmap(base642Bitmap(res));
                 }
                 Log.i("res", res);//打印返回的结果
@@ -151,8 +156,8 @@ public class ProcessingFragment extends Fragment {
             public void run() {
                 MyRequest request = new MyRequest();//这里是我封装的一个网络请求方法，详细代码在最下方
                 String data="style="+imgBase64;
-                String res = request.post("http://10.241.127.208:30000/get",data);
-                if(res.length()>100){
+                String res = request.post("http://192.168.43.153:30000/get",data);
+                if(res.length()>500){
                     outputIv.setImageBitmap(base642Bitmap(res));
                 }
                 Log.i("res", res);//打印返回的结果

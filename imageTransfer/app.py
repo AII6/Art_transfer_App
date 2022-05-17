@@ -78,4 +78,4 @@ def index():
 if __name__ == '__main__':
     content = None
     style = None
-    app.run(host='10.241.127.208', port=30000)
+    app.run(host='192.168.43.153', port=30000)
